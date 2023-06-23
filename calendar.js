@@ -1,6 +1,7 @@
 //check the console for date click event
 //Fixed day highlight
 //Added previous month and next month view
+const url = 'http://194.67.78.60:8000/api/endpoint';
 
 function CalendarControl() {
     const calendar = new Date();
@@ -71,11 +72,26 @@ function CalendarControl() {
         monthLabel.innerHTML = calendarControl.calMonthName[calendar.getMonth()];
       },
       selectDate: function (e) {
-        console.log(
-          `${e.target.textContent} ${
+         const payload = {
+          date: (new Date(`${e.target.textContent} ${
             calendarControl.calMonthName[calendar.getMonth()]
-          } ${calendar.getFullYear()}`
-        );
+          } ${calendar.getFullYear()}`)).toISOString()
+        }
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+      })
+          .then(response => response.json())
+          .then(result => {
+              console.log(result);
+          })
+          .catch(error => {
+              console.error('Ошибка:', error);
+          });
       },
       plotSelectors: function () {
         document.querySelector(
